@@ -1,0 +1,35 @@
+{% extends 'index.html' %}
+
+{% block head %}
+
+<title> Login </title>
+
+{% endblock %}
+
+{% block body %}
+
+<button class="back-button" onclick="window.location.href='/'"> 🡰 Back </button>
+
+{% endblock %}
+
+{% block animated %}
+
+<div class="login-form">
+    <form method="post">
+        <h1>Login</h1>
+
+        {% if error %}
+             <p style="color: red;">{{ error }}</p>
+        {% endif %}
+
+        <label for="username"> Username: </label>
+        <input type="username" name="username" placeholder="Enter username" autocomplete="off"><br>
+
+        <label for="password"> Password: </label>
+        <input type="password" name="password" placeholder="Enter password" autocomplete="off"><br>
+
+        <button type="submit"> Login </button>
+    </form>
+</div>
+
+{% endblock %}
