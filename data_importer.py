@@ -9,7 +9,6 @@ from database import db
 from db_query import load_service_description, load_service_prices
 
 
-
 COSTING_TABLE = "costing_data"
 CHARGEBACK_CONFIG_FILE = "chargeback_configuration"
 CHARGEBACK_CCC_SHEET = "CCC"
