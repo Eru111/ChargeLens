@@ -19,7 +19,6 @@ SERVICE_RATE_TABLE = "it_activity_types_2026_rates"
 RECEIVER_CC_COLUMN = "Receiver CC"
 ACTIVITY_COLUMN = "Activity"
 SERVICE_DESCRIPTION_TABLE = "service_description"
-#BASE_FOLDER = r""
 
 def make_table_name(filename):
     name = os.path.splitext(filename)[0]
@@ -29,13 +28,7 @@ def make_table_name(filename):
         name = "_" + name
 
     return name
-'''
-def is_safe_path(folder_path):
-    folder_path = os.path.abspath(folder_path)
-    base_path = os.path.abspath(BASE_FOLDER)
 
-    return os.path.commonpath([folder_path, base_path]) == base_path
-'''
 def read_data_file(file_path):
     if file_path.lower().endswith(".csv"):
         return pd.read_csv(file_path)

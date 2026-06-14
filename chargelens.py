@@ -1,5 +1,3 @@
-import shutil
-import tempfile
 import os
 
 import pandas as pd
@@ -8,7 +6,7 @@ from sqlalchemy import inspect, text
 from io import BytesIO
 
 from database import db, DB_USER, DB_PASS, DB_NAME, INSTANCE_CONNECTION_NAME
-from data_importer import import_data_files, save_uploaded_folder#, is_safe_path
+from data_importer import import_data_files
 from db_query import get_table, create_indexes
 
 
@@ -29,10 +27,7 @@ def upload_folder():
     if request.method == "POST":
         folder_path = request.form["folder_path"]
 
-        #if not is_safe_path(folder_path):
-        #    return "Invalid Folder Path", 400
-        
-        import_data_files(folder_path   )
+        import_data_files(folder_path)
         create_indexes()
 
         return redirect(url_for("view_tables"))
@@ -152,3 +147,4 @@ def export_results():
 
 if __name__ == "__main__":
     app.run(debug=True, host="0.0.0.0", port=int(os.environ.get("PORT", 8080)))
+    
