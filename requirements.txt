@@ -1,5 +1,7 @@
 pandas
 flask
+flask_sqlalchemy
 sqlalchemy
 werkzeug
 flask_sqlalchemy
+openpyxl
