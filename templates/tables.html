@@ -1,0 +1,47 @@
+{% extends 'index.html' %}
+
+{% block head %}
+
+<title>Database Tables</title>
+
+{% endblock %}
+
+{% block body %}
+
+<button class="back-button" onclick="window.location.href='/'"> 🡰 Back </button>
+
+{% endblock %}
+
+{% block animated %}
+
+<div class="tables-page">
+    <div class="tables-card">
+        <h1>Database Tables</h1>
+        {% if tables %}
+            <table class="db-table-list">
+                <thead>
+                    <tr>
+                        <th>Table Name</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for table in tables %}
+                        <tr>
+                            <td>{{ table }}</td>
+                            <td>
+                                <form method="post" action="{{ url_for('delete_table', table_name=table) }}">
+                                    <button class="delete-button" type="submit">Delete</button>
+                                </form>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        {% else %}
+            <p class="no-results">No tables found.</p>
+        {% endif %}
+    </div>
+</div>
+
+{% endblock %}

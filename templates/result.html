@@ -1,0 +1,126 @@
+{% extends 'index.html' %}
+
+{% block head %}
+
+<title> Results </title>
+
+{% endblock %}
+
+{% block body %}
+
+<button class="back-button" onclick="window.location.href='/search'"> 🡰 Back </button>
+
+<script>
+function sortTable(header) {
+    const table = header.closest("table");
+    const tbody = table.querySelector("tbody");
+    const columnIndex = header.cellIndex;
+    const rows = Array.from(tbody.querySelectorAll("tr"));
+    const totalRow = rows.pop();
+    const currentState = header.dataset.sort || "none";
+    table.querySelectorAll("th").forEach(th => {
+        if (th !== header) {
+            th.dataset.sort = "none";
+        }
+    });
+    let newState;
+    if (currentState === "none") {
+        newState = "asc";
+    } else if (currentState === "asc") {
+        newState = "desc";
+    } else {
+        newState = "none";
+    }
+    header.dataset.sort = newState;
+    if (newState === "none") {
+        location.reload();
+        return;
+    }
+    rows.sort((a, b) => {
+        const aVal = a.cells[columnIndex].innerText.trim();
+        const bVal = b.cells[columnIndex].innerText.trim();
+        const aNum = parseFloat(aVal);
+        const bNum = parseFloat(bVal);
+        if (!isNaN(aNum) && !isNaN(bNum)) {
+            return newState === "asc"
+                ? aNum - bNum
+                : bNum - aNum;
+        }
+        return newState === "asc"
+            ? aVal.localeCompare(bVal)
+            : bVal.localeCompare(aVal);
+    });
+    rows.forEach(row => tbody.appendChild(row));
+    tbody.appendChild(totalRow   )
+}
+</script>
+
+{% endblock %}
+
+{% block animated %}
+
+<div class="results-card">
+    <h1> Search Results </h1>
+
+    <a href="{{ url_for(
+        'export_results',
+        search_type=search_type,
+        user_input=user_input,
+        months=months,
+        services=services
+    ) }}">
+        <button class="export-button" type="button">Export to Excel</button>
+    </a>
+
+    {% if table %}
+        <div class="table-container">
+            <table class="results-table">
+                <thead>
+                    {% set allowed_sort = [
+                        "Activity",
+                        "Qty",
+                        "Price"
+                    ] %}
+                    <tr>
+                        {% for column in table[0].keys() %}
+                            {% if column != "Description" %}
+                                {% if column in allowed_sort %}
+                                    <th class="sortable-column" onclick="sortTable(this)" >
+                                        {{ column }}
+                                    </th>
+                                {% else %}
+                                    <th>{{ column }}</th>
+                                {% endif %}  
+                            {% endif %}                        
+                        {% endfor %}
+                    </tr>
+                </thead>
+
+                <tbody>
+                    {% for row in table %}
+                        <tr>
+                            {% for column, value in row.items() %}
+                                {% if column == "Activity" %}
+                                    <td>
+                                        <span class="service-tooltip">
+                                            {{ value }}
+                                            <span class="tooltip-text">
+                                                {{ row["Description"] }}
+                                            </span>
+                                        </span>
+                                    </td>
+                                {% elif column != "Description" %}
+                                    <td>{{ value }}</td>
+                                {% endif %}
+                            {% endfor %}
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    {% else %}
+        <p class="no-results">No results found.</p>
+    {% endif %}
+</div>
+
+{% endblock %}

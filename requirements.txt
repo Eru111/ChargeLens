@@ -1,0 +1,10 @@
+tempfile
+pandas
+flask
+sqlalchemy
+io
+database
+data_importer
+db_query
+werkzeug
+flask_sqlalchemy

@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+        {% block head %}{% endblock %}
+    </head>
+    <body>
+        {% block body %}{% endblock %}
+            <div class="page-animation">
+                {% block animated %}{% endblock %}
+            </div>
+        <img src="../static/aramco logo.png" class="aramco-logo" alt="">
+        <img src="../static/aramco logo (word).png" class="aramco-watermark" alt="">
+    </body>
+</html>

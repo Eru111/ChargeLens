@@ -1,0 +1,118 @@
+{% extends 'index.html' %}
+
+{% block head %}
+
+<title> Search </title>
+
+{% endblock %}
+
+{% block body %}
+
+<button class="back-button" onclick="window.location.href='/'"> 🡰 Back </button>
+
+<script>
+    function updateInputField() {
+        const choice = document.getElementById("search_type").value;
+        const label = document.getElementById("input_label");
+        const input = document.getElementById("user_input");
+
+        input.value = "";
+        input.removeAttribute("pattern");
+        input.removeAttribute("title");
+
+        if (choice == "cc") {
+            label.textContent = "Enter Cost Center (CC):";
+            input.placeholder = "Example: 123456, 112233, 123123";
+            input.pattern = "^[ ]*[0-9]{6}([ ]*,[ ]*[0-9]{6})*[ ]*$";
+            input.removeAttribute("disabled");
+            input.setAttribute("title", "Format must be like 123456, 112233, 123123");
+        } else if (choice == "org") {
+            label.textContent = "Enter Organization Code:";
+            input.placeholder = "Example: 12345678, 11223344, 12341234";
+            input.pattern = "^[ ]*[0-9]{8}([ ]*,[ ]*[0-9]{8})*[ ]*$";
+            input.removeAttribute("disabled");
+            input.setAttribute("title", "Format must be like 12345678, 11223344, 12341234");
+        } else {
+            label.textContent = "Enter Value:";
+            input.placeholder = "Choose input type first";
+            input.setAttribute("disabled", "");
+        }
+    }
+</script>
+
+<script>
+    document.getElementById("search_form").addEventListener("submit", function(event) {
+        const userInput = document.getElementById("user_input").value.trim();
+        const serviceInput = document.getElementById("services").value.trim();
+
+        const monthsChecked = document.querySelectorAll("input[name='months']:checked").length;
+
+        if (userInput === "" && serviceInput === "" && monthsChecked === 0) {
+            event.preventDefault();
+
+            alert("Please provide at least one search criterion (Cost Center/Org Code, Month, or Service).")
+        }
+    });
+</script>
+
+{% endblock %}
+
+{% block animated %}
+
+<div class="search-form">
+    <form id="search_form" method="post" autocomplete="off">
+        <label for ="search_type"> Choose input type: </label><br>
+        <select name="search_type" id="search_type" onchange="updateInputField()">
+            <option value=""> ---- Select Input Type ---- </option>
+            <option value="cc"> Cost Center (CC) </option>
+            <option value="org"> Organization Code </option>
+        </select><br>
+
+        <label id="input_label" for="user_input"> Enter Value: </label><br>
+        <input
+            type="text"
+            name="user_input"
+            id="user_input"
+            placeholder="Choose input type first"
+            disabled
+        ><br>
+
+        <label for="months"> Select Month: </label><br>
+        <div class="checkbox-container">
+            <div class="checkbox-grid">
+                {% set months = [
+                    ("1", "January"),
+                    ("2", "February"),
+                    ("3", "March"),
+                    ("4", "April"),
+                    ("5", "May"),
+                    ("6", "June"),
+                    ("7", "July"),
+                    ("8", "August"),
+                    ("9", "September"),
+                    ("10", "October"),
+                    ("11", "November"),
+                    ("12", "December")
+                ] %}
+
+                {% for value, month in months %}
+                    <label><input type="checkbox" name="months" value="{{ value }}">{{ month }}</label>    
+                {% endfor %}
+            </div>
+        </div>
+
+        <label for="services"> Enter Service (ITA): </label><br>
+        <input 
+            type="text"
+            name="services"
+            id="services"
+            placeholder="Example: ITA001, ITA002, ITA003"
+            pattern="^[ ]*[Ii][Tt][Aa][0-9]{3}([ ]*,[ ]*[Ii][Tt][Aa][0-9]{3})*[ ]*$"
+            title="Format must be like ITA001, ITA002"
+        ><br>
+
+        <button class="search-button" type="submit"> Search </button>
+    </form>
+</div>
+
+{% endblock %}

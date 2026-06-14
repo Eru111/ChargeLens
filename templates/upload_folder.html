@@ -1,0 +1,33 @@
+{% extends 'index.html' %}
+
+{% block head %}
+
+<title> Upload Folder </title>
+
+{% endblock %}
+
+{% block body %}
+
+<button class="back-button" onclick="window.location.href='/'"> 🡰 Back </button>
+
+{% endblock %}
+
+{% block animated %}
+
+<div class="upload-form">
+    <form method="post">
+        <label for="folder_path"> Upload Folder Path: </label>
+        <input type="text" name="folder_path" placeholder="Enter folder path">
+        <button type="submit"> Enter </button>
+    </form>
+</div>
+<!--
+<div class="upload-form">
+    <form method="post" enctype="multipart/form-data">
+        <label for="files"> Upload Folder: </label><br>
+        <input type="file" name="files" webkitdirectory multiple><br>
+        <button type="submit"> Upload </button>
+    </form>
+</div>
+-->
+{% endblock %}
