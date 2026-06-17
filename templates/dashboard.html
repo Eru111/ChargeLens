@@ -1,0 +1,39 @@
+{% extends 'index.html' %}
+
+{% block head %}
+
+<title> Home Page </title>
+
+{% endblock %}
+
+{% block body %}
+
+<button class="back-button" onclick="window.location.href='/'"> 🡰 Back </button>
+
+{% endblock %}
+
+{% block animated %}
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<div class="cost-chart">
+    <canvas id="costChart"></canvas>
+</div>
+
+<script>
+new Chart(
+    document.getElementById('costChart'),
+    {
+        type: 'bar',
+        data: {
+            labels: {{ months | tojson }},
+            datasets: [{
+                label: 'Total Charges',
+                data: {{ totals | tojson }}
+            }]
+        }
+    }
+);
+</script>
+
+{% endblock %}

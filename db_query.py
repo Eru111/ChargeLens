@@ -180,3 +180,13 @@ def load_service_description():
     ''')
     rows = db.session.execute(query).mappings().all()
     return {row["Service Code"]: row["Service Description"] for row in rows}
+
+def get_monthly_totals():
+    rows = db.session.execute(text('''
+        SELECT "Month",
+               SUM("Price") AS total_cost
+        FROM costing_data
+        GROUP BY "Month"
+    ''')).mappings().all()
+
+    return rows

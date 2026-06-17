@@ -9,18 +9,26 @@ from werkzeug.security import check_password_hash
 
 from database import db, DB_USER, DB_PASS, DB_NAME, INSTANCE_CONNECTION_NAME
 from data_importer import import_data_files
-from db_query import get_table, create_indexes
+from db_query import get_table, create_indexes, get_monthly_totals
 
 
+dev = True
 
 app = Flask(__name__)
-app.config["SQLALCHEMY_DATABASE_URI"] = (
-    f"postgresql+psycopg2://{DB_USER}:{DB_PASS}@/{DB_NAME}"
-    f"?host=/cloudsql/{INSTANCE_CONNECTION_NAME}"
-)
-ADMIN_USERNAME = os.environ.get("ADMIN_USERNAME")
-ADMIN_PASSWORD = os.environ.get("ADMIN_PASSWORD")
-app.secret_key = os.environ.get("SECRET_KEY")
+if dev:
+    app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///ITcosting.db"
+    ADMIN_USERNAME = "Dev"
+    ADMIN_PASSWORD = "Dev"
+    app.secret_key = "12345"
+else:
+    app.config["SQLALCHEMY_DATABASE_URI"] = (
+        f"postgresql+psycopg2://{DB_USER}:{DB_PASS}@/{DB_NAME}"
+        f"?host=/cloudsql/{INSTANCE_CONNECTION_NAME}"
+    )
+    ADMIN_USERNAME = os.environ.get("ADMIN_USERNAME")
+    ADMIN_PASSWORD = os.environ.get("ADMIN_PASSWORD")
+    app.secret_key = os.environ.get("SECRET_KEY")
+
 db.init_app(app)
 
 def login_required(route_function):
@@ -40,9 +48,14 @@ def login():
         username = request.form["username"]
         password = request.form["password"]
 
-        if username == ADMIN_USERNAME and check_password_hash(ADMIN_PASSWORD, password):
-            session["logged_in"] = True
-            return redirect(url_for("home"))
+        if dev:
+            if username == ADMIN_USERNAME and ADMIN_PASSWORD == password:
+                session["logged_in"] = True
+                return redirect(url_for("home"))
+        else:
+            if username == ADMIN_USERNAME and check_password_hash(ADMIN_PASSWORD, password):
+                session["logged_in"] = True
+                return redirect(url_for("home"))
 
         return render_template("login.html", error="Invalid username or password")
     
@@ -189,6 +202,19 @@ def export_results():
         mimetype="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
     )
 
+@app.route("/dashboard")
+@login_required
+def dashboard():
+    monthly_totals = get_monthly_totals()
+
+    months = [row['Month'] for row in monthly_totals]
+    totals = [float(row["total_cost"]) for row in monthly_totals]
+
+    return render_template("dashboard.html", months=months, totals=totals)
+
 if __name__ == "__main__":
-    app.run(debug=True, host="0.0.0.0", port=int(os.environ.get("PORT", 8080)))
+    if dev:
+        app.run(debug=True, host="0.0.0.0", port=int(os.environ.get("PORT", 8080)))
+    else:
+        app.run()
     

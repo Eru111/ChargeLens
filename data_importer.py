@@ -126,9 +126,11 @@ def clean_data_columns(df):
 def add_metadata_columns(df, file, root, month, price_map, description_map):
     df["Source_file"] = file
     df["Source_folder"] = os.path.basename(root)
-    df["Price"] = df["Activity"].map(price_map)
+    df["Unit Price"] = df["Activity"].map(price_map)
+    df["Price"] = df["Qty"] * df["Unit Price"]
     df["Month"] = month
     df["Description"] = df["Activity"].map(description_map)
+
     return df
 
 def import_chargeback_config(file_path):

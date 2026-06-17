@@ -456,3 +456,13 @@ input[type="file"]::file-selector-button {
 .page-animation {
     animation: fadeInUp 0.5s ease-out;
 }
+
+.cost-chart {
+    align-items: center;
+    display: flex;
+    height: 97.5vh;
+    justify-content: center;
+    margin: auto;
+    width: 800px;
+    height: 700px;
+}
