@@ -12,7 +12,7 @@ from data_importer import import_data_files
 from db_query import get_table, create_indexes, get_monthly_totals
 
 
-dev = True
+dev = False
 
 app = Flask(__name__)
 if dev:
